@@ -1,7 +1,5 @@
 package com.itheima.report.unit;
 
-import com.fasterxml.jackson.databind.JsonSerializer;
-import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
