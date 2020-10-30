@@ -1,7 +1,9 @@
 package com.itheima.report.unit;
 
+import com.fasterxml.jackson.databind.JsonSerializer;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,6 +43,8 @@ public class KafkaProducerConfig {
         configs.put(ProducerConfig.BATCH_SIZE_CONFIG,batchSizeConfig);
         configs.put(ProducerConfig.LINGER_MS_CONFIG,lingerMsConfig);
         configs.put(ProducerConfig.BUFFER_MEMORY_CONFIG,bufferMemoryConfig);
+        configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         ProducerFactory<String,String>  producerFactory= new DefaultKafkaProducerFactory<>(configs);
         KafkaTemplate<String,String> kafkaTemplate=new KafkaTemplate<>(producerFactory);
         return kafkaTemplate;
