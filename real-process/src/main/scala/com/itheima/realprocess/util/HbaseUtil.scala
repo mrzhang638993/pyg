@@ -3,6 +3,7 @@ package com.itheima.realprocess.util
 
 import java.util
 
+import org.apache.commons.lang3.StringUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
 import org.apache.hadoop.hbase.client.{Admin, ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, Connection, ConnectionFactory, Get, Put, Result, Scan, Table, TableDescriptor, TableDescriptorBuilder}
@@ -120,15 +121,43 @@ object HbaseUtil {
       table.close()
     }
   }
+
+  // 批量获取多列数据的方法
+  def getMapData(tableName:String,columnFamily:String,rowKey:String,map:List[String]):Map[String,String]={
+    val table: Table = getTable(tableName, columnFamily)
+    val get=new Get(rowKey.getBytes())
+    val result: Result = table.get(get)
+    try {
+      val resultMap: Map[String, String] = map.map(col => {
+        val value: Array[Byte] = result.getValue(columnFamily.getBytes(), col.getBytes())
+        if (value != null && value.size > 0) {
+          val strValue: String = Bytes.toString(value)
+          col -> strValue
+        } else {
+          "" -> ""
+        }
+      }).filter(_._1 != "").toMap
+      resultMap
+    } catch {
+      case  e:Exception=>{
+        println(e.getCause)
+        Map[String,String]()
+      }
+    } finally {
+      table.close()
+    }
+  }
   def main(args: Array[String]): Unit = {
     //getTable("test","info")
     //putData("test","info","1","t1","hello")
     //println(getData("test", "info", "1", "t1"))
-     val map=Map(
+    /* val map=Map(
       "t2"->"scala",
       "t3"->"hive",
       "t4"->"flink"
     )
-    putMapData("test","info","1",map)
+    putMapData("test","info","1",map)*/
+    val columnsValues: Map[String, String] = getMapData("test", "info", "1", List("t1", "t2", "t3", "t4"))
+    println(columnsValues)
   }
 }
