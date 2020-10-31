@@ -3,7 +3,8 @@ package com.itheima.realprocess.util
 
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
-import org.apache.hadoop.hbase.client.{Admin, ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, Connection, ConnectionFactory, Table, TableDescriptor, TableDescriptorBuilder}
+import org.apache.hadoop.hbase.client.{Admin, ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, Connection, ConnectionFactory, Put, Table, TableDescriptor, TableDescriptorBuilder}
+import org.apache.hadoop.hbase.util.Bytes
 
 /**
  * hbase操作的工具类对象
@@ -37,7 +38,36 @@ object HbaseUtil {
      conn.getTable(tableNames)
    }
 
+  /**
+   * tableName:表的名称
+   * columnFamily:列族
+   * rowKey: rowkey
+   * columnFamily:列族
+   * columnName：列明
+   * columnValue:列的数值
+   * */
+  def   putData(tableName:String,columnFamily:String,rowKey:String,columnName:String,columnValue:String): Unit ={
+    val table: Table = getTable(tableName, columnFamily)
+    var put=new Put(rowKey.getBytes())
+    // 对应的设置数据信息
+    put.addColumn(columnFamily.getBytes(),columnName.getBytes(),columnValue.getBytes())
+    // 保存数据
+    try {
+      table.put(put)
+    }catch{
+          /**
+           * 出现异常关闭table对象
+           * */
+      case  e:Exception=> {
+        println(e.getCause)
+      }
+    }finally {
+      table.close()
+    }
+  }
+
   def main(args: Array[String]): Unit = {
-    getTable("test","info")
+    //getTable("test","info")
+    putData("test","info","1","t1","hello")
   }
 }
