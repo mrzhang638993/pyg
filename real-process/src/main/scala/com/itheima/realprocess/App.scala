@@ -4,7 +4,8 @@ import java.lang
 import java.util.Properties
 
 import com.alibaba.fastjson.{JSON, JSONObject}
-import com.itheima.realprocess.bean.{ClickLog, Message}
+import com.itheima.realprocess.bean.{ClickLog, ClickLogWide, Message}
+import com.itheima.realprocess.task.PreTask
 import com.itheima.realprocess.util.GlobalConfigUtil
 import org.apache.flink.api.scala._
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
@@ -81,7 +82,9 @@ object App {
         currentTimestamp
       }
     })
-    waterValue.print()
+    //  执行数据的预处理操作实现
+    val etlValue: DataStream[ClickLogWide] = PreTask.process(waterValue)
+    etlValue.print()
     //  增加检查点的支持操作和实现
     env.execute("real-process")
   }
