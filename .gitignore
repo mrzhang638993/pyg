@@ -1,0 +1,7 @@
+/canal-kafka/target/
+/real-process/target/
+/report/target/
+/sync-db/target/
+/.idea/
+/batch-process/target/
+/pyg.iml
