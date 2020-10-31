@@ -1,7 +1,10 @@
 package com.itheima.realprocess
 
+import java.lang
 import java.util.Properties
 
+import com.alibaba.fastjson.{JSON, JSONObject}
+import com.itheima.realprocess.bean.ClickLog
 import com.itheima.realprocess.util.GlobalConfigUtil
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
@@ -48,7 +51,19 @@ object App {
     properties.put("auto.offset.reset",GlobalConfigUtil.AUTO_OFFSET_RESET)
     val kafkaDataStream = new FlinkKafkaConsumer09[String](GlobalConfigUtil.INPUT_TOPIC, new SimpleStringSchema(), properties)
     val consumerDataStream: DataStream[String] = env.addSource(kafkaDataStream)
-    consumerDataStream.print()
+    //  处理json的数据
+    val mapValue: DataStream[(ClickLog, lang.Long, lang.Long)] = consumerDataStream.map {
+      item => {
+        //  处理json解析操作
+        val jsonObject: JSONObject = JSON.parseObject(item)
+        val message: String = jsonObject.getString("message")
+        val timeStamp: lang.Long = jsonObject.getLong("timestamp")
+        val count: lang.Long = jsonObject.getLong("count")
+        // 转化成为样例类对象
+        (ClickLog(message), timeStamp, count)
+      }
+    }
+    mapValue.print()
     env.execute("real-process")
   }
 }
