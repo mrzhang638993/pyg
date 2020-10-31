@@ -43,6 +43,8 @@ public class KafkaProducerConfig {
         configs.put(ProducerConfig.BUFFER_MEMORY_CONFIG,bufferMemoryConfig);
         configs.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         configs.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+        // 指定自定义的分区方式
+        configs.put(ProducerConfig.PARTITIONER_CLASS_CONFIG,RoundRobinPartitioner.class);
         ProducerFactory<String,String>  producerFactory= new DefaultKafkaProducerFactory<>(configs);
         KafkaTemplate<String,String> kafkaTemplate=new KafkaTemplate<>(producerFactory);
         return kafkaTemplate;
