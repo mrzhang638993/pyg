@@ -4,9 +4,18 @@ import java.lang
 
 import com.alibaba.fastjson.{JSON, JSONObject}
 
-case class ClickLog(channelID:Long,categoryID:Long,produceID:Long,
-                    userID:Long,country:String,province:String,city:String,network:String,
-                    source:String,browserType:String, entryTime:Long,leaveTime:Long)
+case class ClickLog(channelID:Long,
+                    categoryID:Long,
+                    produceID:Long,
+                    userID:Long,
+                    country:String,
+                    province:String,
+                    city:String,
+                    network:String,
+                    source:String,
+                    browserType:String,
+                    entryTime:Long,
+                    leaveTime:Long)
 
 object  ClickLog{
   def apply(json:String): ClickLog ={
