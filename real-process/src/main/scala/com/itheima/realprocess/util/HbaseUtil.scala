@@ -1,6 +1,8 @@
 package com.itheima.realprocess.util
 
 
+import java.util
+
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
 import org.apache.hadoop.hbase.client.{Admin, ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, Connection, ConnectionFactory, Get, Put, Result, Scan, Table, TableDescriptor, TableDescriptorBuilder}
@@ -121,6 +123,12 @@ object HbaseUtil {
   def main(args: Array[String]): Unit = {
     //getTable("test","info")
     //putData("test","info","1","t1","hello")
-    println(getData("test", "info", "1", "t1"))
+    //println(getData("test", "info", "1", "t1"))
+     val map=Map(
+      "t2"->"scala",
+      "t3"->"hive",
+      "t4"->"flink"
+    )
+    putMapData("test","info","1",map)
   }
 }
