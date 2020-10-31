@@ -6,7 +6,7 @@ import java.util
 import org.apache.commons.lang3.StringUtils
 import org.apache.hadoop.conf.Configuration
 import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
-import org.apache.hadoop.hbase.client.{Admin, ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, Connection, ConnectionFactory, Get, Put, Result, Scan, Table, TableDescriptor, TableDescriptorBuilder}
+import org.apache.hadoop.hbase.client.{Admin, ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, Connection, ConnectionFactory, Delete, Get, Put, Result, Scan, Table, TableDescriptor, TableDescriptorBuilder}
 import org.apache.hadoop.hbase.util.Bytes
 
 /**
@@ -147,6 +147,20 @@ object HbaseUtil {
       table.close()
     }
   }
+  /**
+   * 执行hbase的delete操作实现
+   * */
+  def  deleteData(tableName:String,columnFamily:String,rowKey:String):Unit={
+    val table: Table = getTable(tableName, columnFamily)
+    val  delete=new Delete(rowKey.getBytes())
+    try {
+      table.delete(delete)
+    } catch {
+      case e:Exception => println(e)
+    } finally {
+      table.close()
+    }
+  }
   def main(args: Array[String]): Unit = {
     //getTable("test","info")
     //putData("test","info","1","t1","hello")
@@ -157,7 +171,8 @@ object HbaseUtil {
       "t4"->"flink"
     )
     putMapData("test","info","1",map)*/
-    val columnsValues: Map[String, String] = getMapData("test", "info", "1", List("t1", "t2", "t3", "t4"))
-    println(columnsValues)
+   /* val columnsValues: Map[String, String] = getMapData("test", "info", "1", List("t1", "t2", "t3", "t4"))
+    println(columnsValues)*/
+    deleteData("test","info","1")
   }
 }
