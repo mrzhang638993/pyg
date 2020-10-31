@@ -1,13 +1,8 @@
 package com.itheima.realprocess.util
-
-
-import java.util
-
-import org.apache.commons.lang3.StringUtils
 import org.apache.hadoop.conf.Configuration
-import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
-import org.apache.hadoop.hbase.client.{Admin, ColumnFamilyDescriptor, ColumnFamilyDescriptorBuilder, Connection, ConnectionFactory, Delete, Get, Put, Result, Scan, Table, TableDescriptor, TableDescriptorBuilder}
+import org.apache.hadoop.hbase.client._
 import org.apache.hadoop.hbase.util.Bytes
+import org.apache.hadoop.hbase.{HBaseConfiguration, TableName}
 
 /**
  * hbase操作的工具类对象
@@ -173,6 +168,6 @@ object HbaseUtil {
     putMapData("test","info","1",map)*/
    /* val columnsValues: Map[String, String] = getMapData("test", "info", "1", List("t1", "t2", "t3", "t4"))
     println(columnsValues)*/
-    deleteData("test","info","1")
+    //deleteData("test","info","1")
   }
 }

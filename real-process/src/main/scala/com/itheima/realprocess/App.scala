@@ -6,15 +6,15 @@ import java.util.Properties
 import com.alibaba.fastjson.{JSON, JSONObject}
 import com.itheima.realprocess.bean.{ClickLog, Message}
 import com.itheima.realprocess.util.GlobalConfigUtil
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
-import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
+import org.apache.flink.api.scala._
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.environment.CheckpointConfig
-import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer010, FlinkKafkaConsumer09}
-import org.apache.flink.streaming.util.serialization.{DeserializationSchema, SimpleStringSchema}
-import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks
+import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.watermark.Watermark
+import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09
+import org.apache.flink.streaming.util.serialization.SimpleStringSchema
 /**
  * 初始化flink的流式环境
  * */
