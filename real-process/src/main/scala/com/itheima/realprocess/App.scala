@@ -67,17 +67,15 @@ object App {
     }
     // 水印时间的出现时为了表面时间戳的问题，导致数据没有进入到时间窗口的，因为网络延时的原因导致出现问题的。
     //只有当水印时间大于或者等于窗口的时间的话，才会触发计算的。窗口的计算时已watermark来计算的。
-    // 水印时间一般的比事件时间小几秒钟的。
+    // 水印时间一般的比事件时间小几秒钟的。解决网络延时造成数据没有被计算的问题
     val waterValue: DataStream[Message] = mapValue.assignTimestampsAndWatermarks(new AssignerWithPeriodicWatermarks[Message] {
       // 记录当前时间
       var currentTimestamp = 0L;
       // 定义网络延迟时间,延迟2秒时间
       var delay = 2000L;
-
       override def getCurrentWatermark: Watermark = {
         new Watermark(currentTimestamp - delay)
       }
-
       override def extractTimestamp(element: Message, previousElementTimestamp: Long): Long = {
         currentTimestamp = Math.max(element.timeStamp, previousElementTimestamp)
         currentTimestamp
