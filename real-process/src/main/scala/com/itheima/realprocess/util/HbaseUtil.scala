@@ -24,7 +24,7 @@ object HbaseUtil {
    * */
    val admin: Admin = conn.getAdmin
 
-   def  getTable(tableName:String,columnFamily:String): Unit ={
+   def  getTable(tableName:String,columnFamily:String): Table ={
      val tableNames: TableName = TableName.valueOf(tableName.getBytes)
      val bool: Boolean = admin.tableExists(tableNames).booleanValue()
      if(!bool){
@@ -34,8 +34,7 @@ object HbaseUtil {
        builder.setColumnFamily(familyDesc)
        admin.createTable(builder.build())
      }
-     val table: Table = conn.getTable(tableNames)
-     println(table)
+     conn.getTable(tableNames)
    }
 
   def main(args: Array[String]): Unit = {
