@@ -13,6 +13,8 @@ import org.apache.flink.streaming.api.environment.CheckpointConfig
 import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer010, FlinkKafkaConsumer09}
 import org.apache.flink.streaming.util.serialization.{DeserializationSchema, SimpleStringSchema}
 import org.apache.flink.api.scala._
+import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks
+import org.apache.flink.streaming.api.watermark.Watermark
 /**
  * 初始化flink的流式环境
  * */
@@ -51,7 +53,7 @@ object App {
     properties.put("auto.offset.reset",GlobalConfigUtil.AUTO_OFFSET_RESET)
     val kafkaDataStream = new FlinkKafkaConsumer09[String](GlobalConfigUtil.INPUT_TOPIC, new SimpleStringSchema(), properties)
     val consumerDataStream: DataStream[String] = env.addSource(kafkaDataStream)
-    //  处理json的数据
+    //  处理json的数据。将kafka的消息转化成为样例类对象的
     val mapValue: DataStream[Message] = consumerDataStream.map {
       item => {
         //  处理json解析操作
@@ -63,7 +65,26 @@ object App {
         Message(count,timeStamp,ClickLog(message))
       }
     }
-    mapValue.print()
+    // 水印时间的出现时为了表面时间戳的问题，导致数据没有进入到时间窗口的，因为网络延时的原因导致出现问题的。
+    //只有当水印时间大于或者等于窗口的时间的话，才会触发计算的。窗口的计算时已watermark来计算的。
+    // 水印时间一般的比事件时间小几秒钟的。
+    val waterValue: DataStream[Message] = mapValue.assignTimestampsAndWatermarks(new AssignerWithPeriodicWatermarks[Message] {
+      // 记录当前时间
+      var currentTimestamp = 0L;
+      // 定义网络延迟时间,延迟2秒时间
+      var delay = 2000L;
+
+      override def getCurrentWatermark: Watermark = {
+        new Watermark(currentTimestamp - delay)
+      }
+
+      override def extractTimestamp(element: Message, previousElementTimestamp: Long): Long = {
+        currentTimestamp = Math.max(element.timeStamp, previousElementTimestamp)
+        currentTimestamp
+      }
+    })
+    waterValue.print()
+    //  增加检查点的支持操作和实现
     env.execute("real-process")
   }
 }
