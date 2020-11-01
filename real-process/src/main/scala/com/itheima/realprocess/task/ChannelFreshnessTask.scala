@@ -12,10 +12,12 @@ import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 /**
  * 用户的新鲜度任务测试
  **/
-object ChannelFreshnessTask {
-  def process(clickLogWide: DataStream[ClickLogWide]) = {
-    // 数据转换成为多个时间维度的数据
-    val mapDataStream: DataStream[ChannelFreshness] = clickLogWide.flatMap {
+object ChannelFreshnessTask extends  BaseTask[ChannelFreshness]{
+  /**
+   * 定义转换操作
+   **/
+  override def map(clickLogWide: DataStream[ClickLogWide]): DataStream[ChannelFreshness] = {
+    clickLogWide.flatMap {
       clickLog =>
         // 判断是新用户还是老用户的信息。
         val isOld = (isNew: Int, isDateNew: Int) => if (isNew == 0 && isDateNew == 1) 1 else 0
@@ -25,14 +27,34 @@ object ChannelFreshnessTask {
           ChannelFreshness(clickLog.channelID.toString, clickLog.yearMonthDayHour, clickLog.isNew, isOld(clickLog.isNew, clickLog.isHourNew))
         )
     }
-    // 分组
-    val keyedStream: KeyedStream[ChannelFreshness, String] = mapDataStream.keyBy(freshness => freshness.channelID + freshness.date)
-    // 时间窗口
-    val windowStream: WindowedStream[ChannelFreshness, String, TimeWindow] = keyedStream.timeWindow(Time.seconds(3))
-    // 聚合操作
-    val reduceDataStream: DataStream[ChannelFreshness] = windowStream.reduce((priv, next) => ChannelFreshness(priv.channelID, priv.date, priv.newCount + next.newCount, priv.oldCount + next.oldCount))
-    // 落地hbase
-    reduceDataStream.addSink(new SinkFunction[ChannelFreshness] {
+  }
+
+  /**
+   * 定义分组操作
+   **/
+  override def groupBy(mapDataStream: DataStream[ChannelFreshness]): KeyedStream[ChannelFreshness, String] = {
+    mapDataStream.keyBy(freshness => freshness.channelID + freshness.date)
+  }
+
+  /**
+   * 定义时间窗口操作
+   **/
+  override def timeWindow(keyedStream: KeyedStream[ChannelFreshness, String]): WindowedStream[ChannelFreshness, String, TimeWindow] = {
+    keyedStream.timeWindow(Time.seconds(3))
+  }
+
+  /**
+   * 聚合操作实现
+   **/
+  override def reduce(windowStream: WindowedStream[ChannelFreshness, String, TimeWindow]): DataStream[ChannelFreshness] = {
+    windowStream.reduce((priv, next) => ChannelFreshness(priv.channelID, priv.date, priv.newCount + next.newCount, priv.oldCount + next.oldCount))
+  }
+
+  /**
+   * 数据落地到hbase中
+   **/
+  override def sink2Hbase(reduceStream: DataStream[ChannelFreshness]): Unit = {
+    reduceStream.addSink(new SinkFunction[ChannelFreshness] {
       override def invoke(value: ChannelFreshness): Unit = {
         // 定义变量
         val tableName = "channel_freshness"

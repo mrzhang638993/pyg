@@ -16,41 +16,58 @@ import org.apache.flink.streaming.api.windowing.windows.TimeWindow
  * 4.聚合
  * 5.落地Hbase
  * */
-object ChannelRealHotTask {
-
+object ChannelRealHotTask  extends BaseTask[ChannelRealHot]{
   /**
-   * 字段:channelID
-   * 字段：visited 访问时间
-   * */
-  def process(clickLogWide:DataStream[ClickLogWide]):Unit={
-    // 进行数据转换操作
-    val channelRealHot: DataStream[ChannelRealHot] = clickLogWide.map {
+   * 定义转换操作
+   **/
+  override def map(clickLogWide: DataStream[ClickLogWide]): DataStream[ChannelRealHot] = {
+    clickLogWide.map {
       clickLogWide => {
         ChannelRealHot(clickLogWide.channelID.toString, clickLogWide.count)
       }
     }
-    //分组聚合结果操作
-    val keyByValues: KeyedStream[ChannelRealHot, String] = channelRealHot.keyBy(_.channelID)
-    // 时间窗口
-    val windowStream: WindowedStream[ChannelRealHot, String, TimeWindow] = keyByValues.timeWindow(Time.seconds(3))
-    // 聚合操作
-    val reduceValues: DataStream[ChannelRealHot] = windowStream.reduce((priv, next) => ChannelRealHot(priv.channelID, priv.visited + next.visited))
-    // 数据落地到hbase
-    reduceValues.addSink(new RichSinkFunction[ChannelRealHot] {
+  }
+
+  /**
+   * 定义分组操作
+   **/
+  override def groupBy(mapDataStream: DataStream[ChannelRealHot]): KeyedStream[ChannelRealHot, String] = {
+    mapDataStream.keyBy(_.channelID)
+  }
+
+  /**
+   * 定义时间窗口操作
+   **/
+  override def timeWindow(keyedStream: KeyedStream[ChannelRealHot, String]): WindowedStream[ChannelRealHot, String, TimeWindow] = {
+    keyedStream.timeWindow(Time.seconds(3))
+  }
+
+  /**
+   * 聚合操作实现
+   **/
+  override def reduce(windowStream: WindowedStream[ChannelRealHot, String, TimeWindow]): DataStream[ChannelRealHot] = {
+    windowStream.reduce((priv, next) => ChannelRealHot(priv.channelID, priv.visited + next.visited))
+  }
+
+  /**
+   * 数据落地到hbase中
+   **/
+  override def sink2Hbase(reduceStream: DataStream[ChannelRealHot]): Unit = {
+    reduceStream.addSink(new RichSinkFunction[ChannelRealHot] {
       override def invoke(value: ChannelRealHot): Unit = {
-         val  tableName="channel"
-         val clfName="info"
-         val channelIdColumn="channelId"
-         val visitedColumn="visited"
-         val rowKey=value.channelID
+        val  tableName="channel"
+        val clfName="info"
+        val channelIdColumn="channelId"
+        val visitedColumn="visited"
+        val rowKey=value.channelID
         val visitedCount: String = HbaseUtil.getData(tableName, clfName, rowKey, visitedColumn)
-          if(visitedColumn==null||visitedColumn.isEmpty){
-            // 不做任何的处理，直接写入到hbase中的
-            HbaseUtil.putMapData(tableName,clfName,rowKey,Map(channelIdColumn->value.channelID,visitedColumn->value.visited))
-          }else{
-            // hbase中存在数据的话，需要执行更新操作实现的
-            HbaseUtil.putData(tableName,clfName,rowKey,visitedColumn,(visitedCount.toLong+value.visited).toString)
-          }
+        if(visitedColumn==null||visitedColumn.isEmpty){
+          // 不做任何的处理，直接写入到hbase中的
+          HbaseUtil.putMapData(tableName,clfName,rowKey,Map(channelIdColumn->value.channelID,visitedColumn->value.visited))
+        }else{
+          // hbase中存在数据的话，需要执行更新操作实现的
+          HbaseUtil.putData(tableName,clfName,rowKey,visitedColumn,(visitedCount.toLong+value.visited).toString)
+        }
       }
     })
   }
