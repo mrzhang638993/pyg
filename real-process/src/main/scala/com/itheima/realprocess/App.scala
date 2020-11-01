@@ -5,7 +5,7 @@ import java.util.Properties
 
 import com.alibaba.fastjson.{JSON, JSONObject}
 import com.itheima.realprocess.bean.{ChannelRealHot, ClickLog, ClickLogWide, Message}
-import com.itheima.realprocess.task.{ChannelRealHotTask, PreTask}
+import com.itheima.realprocess.task.{ChannelPvUvTask, ChannelRealHotTask, PreTask}
 import com.itheima.realprocess.util.GlobalConfigUtil
 import org.apache.flink.api.scala._
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
@@ -86,6 +86,8 @@ object App {
     val etlValue: DataStream[ClickLogWide] = PreTask.process(waterValue)
     // 进行数据转换操作.数据落地到hbase中
     ChannelRealHotTask.process(etlValue)
+    // 执行pvuv是数据落地到hbase的操作实现。
+    ChannelPvUvTask.process(etlValue)
     //  增加检查点的支持操作和实现
     env.execute("real-process")
   }
