@@ -5,7 +5,7 @@ import java.util.Properties
 
 import com.alibaba.fastjson.{JSON, JSONObject}
 import com.itheima.realprocess.bean.{ChannelRealHot, ClickLog, ClickLogWide, Message}
-import com.itheima.realprocess.task.{ChannelPvUvTask, ChannelRealHotTask, PreTask}
+import com.itheima.realprocess.task.{ChannelFreshnessTask, ChannelPvUvTask, ChannelRealHotTask, PreTask}
 import com.itheima.realprocess.util.GlobalConfigUtil
 import org.apache.flink.api.scala._
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
@@ -42,11 +42,11 @@ object App {
     // 当程序关闭的时候，触发额外的checkpoint操作的
     env.getCheckpointConfig.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
     //  设置checkpoint的存储信息
-    env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/flink-checkpoint/"))
+    env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/flink-checkpoints/"))
     // 加载本地集合数据查看是否可以执行的
     val properties=new Properties();
     properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)
-  // properties.put("zookeeper.connect",GlobalConfigUtil.ZOOKEEPER_CONNECT)
+   properties.put("zookeeper.connect",GlobalConfigUtil.ZOOKEEPER_CONNECT)
     properties.put("input.topic",GlobalConfigUtil.INPUT_TOPIC)
     properties.put("group.id",GlobalConfigUtil.GROUP_ID)
    properties.put("enable.auto.commit",GlobalConfigUtil.ENABLE_AUTO_COMMIT)
@@ -89,7 +89,7 @@ object App {
     // 执行pvuv是数据落地到hbase的操作实现。
     ChannelPvUvTask.process(etlValue)
     //统计出来用户的新鲜度统计数据操作实现。某个时间段内存在多少新的用户和老的用户数据
-
+    ChannelFreshnessTask.process(etlValue)
     //  增加检查点的支持操作和实现
     env.execute("real-process")
   }

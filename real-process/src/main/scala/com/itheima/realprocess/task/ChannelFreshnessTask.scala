@@ -58,7 +58,7 @@ object ChannelFreshnessTask {
           // 保存入库操作
           oldCount = value.oldCount
         }
-        HbaseUtil.putMapData(tableName, clfName, rowKey, Map(channelIdColumn -> value.channelID, dateColumn -> value.date, newCountColumn -> newCount, oldCount -> oldCount))
+        HbaseUtil.putMapData(tableName, clfName, rowKey, Map(channelIdColumn -> value.channelID, dateColumn -> value.date, newCountColumn -> newCount, oldCountColumn -> oldCount))
       }
     })
   }
