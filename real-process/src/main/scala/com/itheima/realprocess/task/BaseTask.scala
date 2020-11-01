@@ -65,4 +65,7 @@ trait BaseTask[T] {
   val networkColumn="network"
   val yearMonthDayHourColumn="yearMonthDayHour"
   val visitedColumn="visited"
+  val areaColumn="area"
+  var totalNewCount=0L
+  var totalOldCount=0L
 }

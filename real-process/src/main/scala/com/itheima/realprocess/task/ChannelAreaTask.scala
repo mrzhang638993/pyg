@@ -6,7 +6,7 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.flink.streaming.api.scala.{DataStream, KeyedStream, WindowedStream}
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 import org.apache.flink.api.scala._
-import org.apache.flink.streaming.api.windowing.time.Time
+
 
 object ChannelAreaTask  extends  BaseTask[ChannelArea]{
   /**
@@ -49,7 +49,6 @@ object ChannelAreaTask  extends  BaseTask[ChannelArea]{
            val tableName="channel_area"
            val clfName="info"
            val rowKey=area.channelID+":"+area.area+":"+area.date
-           val  channelIdColumn="channelId"
            // 查询hbase数据
            val pvColumnValue: String = HbaseUtil.getData(tableName, clfName, rowKey, pvColumn)
           //   查询hbase数据
