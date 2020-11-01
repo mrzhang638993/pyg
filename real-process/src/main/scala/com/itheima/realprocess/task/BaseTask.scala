@@ -1,6 +1,7 @@
 package com.itheima.realprocess.task
 
-import com.itheima.realprocess.bean.{ClickLogWide}
+import com.itheima.realprocess.bean.ClickLogWide
+import org.apache.commons.lang3.StringUtils
 import org.apache.flink.streaming.api.scala.{DataStream, KeyedStream, WindowedStream}
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
@@ -68,4 +69,22 @@ trait BaseTask[T] {
   val areaColumn="area"
   var totalNewCount=0L
   var totalOldCount=0L
+
+
+  /**
+   * 获取totalValue信息
+   * @param  resultMap
+   * @Param  column
+   * @Param  currentValue
+   * @return  累计之后的数值
+   **/
+  def getTotal(resultMap: Map[String, String], column: String, currentValue: Long): Long = {
+    var total = 0L
+    if (resultMap != null && StringUtils.isNotBlank(resultMap.getOrElse(column, ""))) {
+      total = resultMap(column).toLong + currentValue
+    } else {
+      total = currentValue
+    }
+    total
+  }
 }
