@@ -84,10 +84,9 @@ object App {
     })
     //  执行数据的预处理操作实现,拓宽字段
     val etlValue: DataStream[ClickLogWide] = PreTask.process(waterValue)
-    // 进行数据转换操作
-    val channelRealHotValues: DataStream[ChannelRealHot] = ChannelRealHotTask.process(etlValue)
+    // 进行数据转换操作.数据落地到hbase中
+    ChannelRealHotTask.process(etlValue)
     //  增加检查点的支持操作和实现
-    channelRealHotValues.print()
     env.execute("real-process")
   }
 }

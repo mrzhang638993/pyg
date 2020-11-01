@@ -21,7 +21,6 @@ public class RoundRobinPartitioner  implements Partitioner {
         if (i>65535){
             count.set(0);
         }
-        System.out.println(i%partition);
         return i%partition;
     }
 
