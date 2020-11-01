@@ -52,17 +52,7 @@ object ChannelNetworkTask  extends  BaseTask[ChannelNetwork]{
     reduceStream.addSink{
       value=>{
         val tableName = "channel_network"
-        val clfName = "info"
         val rowKey =value.channelID+":"+value.network+":"+value.date
-        val channelIdColumn = "channelId"
-        val dateColumn = "date"
-        val newCountColumn = "newCount"
-        val oldCountColumn = "oldCount"
-        val networkColumn="network"
-        val pvColumn="pv"
-        val uvColumn="uv"
-        var totalPvCount=0L
-        var totalUvCount=0L
         // 查询历史数据
         val mapData: Map[String, String] = HbaseUtil.getMapData(tableName, clfName, rowKey, List(pvColumn, uvColumn, newCountColumn, oldCountColumn))
         //  进行数据相加操作

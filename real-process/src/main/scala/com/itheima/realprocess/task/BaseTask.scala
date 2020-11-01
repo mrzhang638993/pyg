@@ -1,6 +1,6 @@
 package com.itheima.realprocess.task
 
-import com.itheima.realprocess.bean.{ChannelPvUv, ChannelRealHot, ClickLogWide}
+import com.itheima.realprocess.bean.{ClickLogWide}
 import org.apache.flink.streaming.api.scala.{DataStream, KeyedStream, WindowedStream}
 import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
@@ -44,4 +44,25 @@ trait BaseTask[T] {
     val reduceStream: DataStream[T] = reduce(windowStream)
     sink2Hbase(reduceStream)
   }
+
+  /**
+   * 检测老用户是否是第一次
+   * */
+  val isOld = (isNew: Int, isDateNew: Int) => if (isNew == 0 && isDateNew == 1) 1 else 0
+
+  /**
+   * 相同的变量抽取出来.放到对应的模板信息中
+   * */
+  val clfName = "info"
+  val channelIdColumn = "channelId"
+  val dateColumn = "date"
+  val newCountColumn = "newCount"
+  val oldCountColumn = "oldCount"
+  val pvColumn="pv"
+  val uvColumn="uv"
+  var totalPvCount=0L
+  var totalUvCount=0L
+  val networkColumn="network"
+  val yearMonthDayHourColumn="yearMonthDayHour"
+  val visitedColumn="visited"
 }

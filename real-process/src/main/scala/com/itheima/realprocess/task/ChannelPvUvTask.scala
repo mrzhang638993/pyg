@@ -47,11 +47,7 @@ object ChannelPvUvTask  extends BaseTask[ChannelPvUv]{
       override def invoke(value: ChannelPvUv): Unit = {
         //  定义hbase的数据表和将对应的数据落地到表中的
         val tableName="channelPvUv"
-        val clfName="info"
         val channelIdColumn="channelId"
-        val yearMonthDayHourColumn="yearMonthDayHour"
-        val pvColumn="pv"
-        val uvColumn="uv"
         val rowKey=value.channelID+":"+value.yearMonthDayHour
         // 首先查询hbase获取到数据信息,精心数据的比对操作
         val columnsValue: Map[String, String] = HbaseUtil.getMapData(tableName, clfName, rowKey, List(channelIdColumn,

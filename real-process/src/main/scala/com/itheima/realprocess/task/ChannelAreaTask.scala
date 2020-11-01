@@ -50,16 +50,6 @@ object ChannelAreaTask  extends  BaseTask[ChannelArea]{
            val clfName="info"
            val rowKey=area.channelID+":"+area.area+":"+area.date
            val  channelIdColumn="channelId"
-           val  areaColumn="area"
-           val  dateColumn="date"
-           val  pvColumn="pv"
-           val  uvColumn="uv"
-           val  newCountColumn="newCount"
-           val  oldCountColumn="oldCount"
-           var  totalPvCount=0L
-           var  totalUvCount=0L
-           var  totalNewCount=0L
-           var  totalOldCount=0L
            // 查询hbase数据
            val pvColumnValue: String = HbaseUtil.getData(tableName, clfName, rowKey, pvColumn)
           //   查询hbase数据

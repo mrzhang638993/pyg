@@ -20,7 +20,6 @@ object ChannelFreshnessTask extends  BaseTask[ChannelFreshness]{
     clickLogWide.flatMap {
       clickLog =>
         // 判断是新用户还是老用户的信息。
-        val isOld = (isNew: Int, isDateNew: Int) => if (isNew == 0 && isDateNew == 1) 1 else 0
         List(
           ChannelFreshness(clickLog.channelID.toString, clickLog.yearMonth, clickLog.isNew, isOld(clickLog.isNew, clickLog.isMonthNew)),
           ChannelFreshness(clickLog.channelID.toString, clickLog.yearMonthDay, clickLog.isNew, isOld(clickLog.isNew, clickLog.isDayNew)),
@@ -51,12 +50,7 @@ object ChannelFreshnessTask extends  BaseTask[ChannelFreshness]{
       override def invoke(value: ChannelFreshness): Unit = {
         // 定义变量
         val tableName = "channel_freshness"
-        val clfName = "info"
         val rowKey = value.channelID + ":" + value.date
-        val channelIdColumn = "channelId"
-        val dateColumn = "date"
-        val newCountColumn = "newCount"
-        val oldCountColumn = "oldCount"
         // 查询历史数据
         val mapData: Map[String, String] = HbaseUtil.getMapData(tableName, clfName, rowKey, List(channelIdColumn, dateColumn, newCountColumn, oldCountColumn))
         //  进行数据相加操作

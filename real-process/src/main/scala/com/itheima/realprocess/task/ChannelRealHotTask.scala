@@ -49,9 +49,7 @@ object ChannelRealHotTask  extends BaseTask[ChannelRealHot]{
     reduceStream.addSink(new RichSinkFunction[ChannelRealHot] {
       override def invoke(value: ChannelRealHot): Unit = {
         val  tableName="channel"
-        val clfName="info"
-        val channelIdColumn="channelId"
-        val visitedColumn="visited"
+
         val rowKey=value.channelID
         val visitedCount: String = HbaseUtil.getData(tableName, clfName, rowKey, visitedColumn)
         if(visitedColumn==null||visitedColumn.isEmpty){
