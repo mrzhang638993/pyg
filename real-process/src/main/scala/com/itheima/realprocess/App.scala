@@ -30,7 +30,7 @@ object App {
     env.setParallelism(1)
     //  设置flink的容错功能，checkpoint检查点操作。保存数据快照，缩短计算的时间操作管理
     //  设置5秒钟启动一次checkpoint操作实现
-    env.enableCheckpointing(5000)
+    env.enableCheckpointing(1200000L)
     // 设置checkpoint的模式为exactly_once操作的。
     env.getCheckpointConfig.setCheckpointingMode(CheckpointingMode.EXACTLY_ONCE)
     //  设置最小时间间隔为1秒
@@ -42,7 +42,7 @@ object App {
     // 当程序关闭的时候，触发额外的checkpoint操作的
     env.getCheckpointConfig.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
     //  设置checkpoint的存储信息
-    env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/flink-checkpoints/"))
+    env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/flink-checkpoint/"))
     // 加载本地集合数据查看是否可以执行的
     val properties=new Properties();
     properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)
