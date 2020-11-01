@@ -88,6 +88,8 @@ object App {
     ChannelRealHotTask.process(etlValue)
     // 执行pvuv是数据落地到hbase的操作实现。
     ChannelPvUvTask.process(etlValue)
+    //统计出来用户的新鲜度统计数据操作实现。某个时间段内存在多少新的用户和老的用户数据
+
     //  增加检查点的支持操作和实现
     env.execute("real-process")
   }
