@@ -36,13 +36,6 @@ object ChannelRealHotTask  extends BaseTask[ChannelRealHot]{
   }
 
   /**
-   * 定义时间窗口操作
-   **/
-  override def timeWindow(keyedStream: KeyedStream[ChannelRealHot, String]): WindowedStream[ChannelRealHot, String, TimeWindow] = {
-    keyedStream.timeWindow(Time.seconds(3))
-  }
-
-  /**
    * 聚合操作实现
    **/
   override def reduce(windowStream: WindowedStream[ChannelRealHot, String, TimeWindow]): DataStream[ChannelRealHot] = {

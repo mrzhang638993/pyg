@@ -33,13 +33,6 @@ object ChannelPvUvTask  extends BaseTask[ChannelPvUv]{
   }
 
   /**
-   * 定义时间窗口操作
-   **/
-  override def timeWindow(keyedStream: KeyedStream[ChannelPvUv, String]): WindowedStream[ChannelPvUv, String, TimeWindow] = {
-    keyedStream.timeWindow(Time.seconds(3))
-  }
-
-  /**
    * 聚合操作实现
    **/
   override def reduce(windowStream: WindowedStream[ChannelPvUv, String, TimeWindow]): DataStream[ChannelPvUv] = {

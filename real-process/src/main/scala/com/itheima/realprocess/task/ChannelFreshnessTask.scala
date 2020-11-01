@@ -37,13 +37,6 @@ object ChannelFreshnessTask extends  BaseTask[ChannelFreshness]{
   }
 
   /**
-   * 定义时间窗口操作
-   **/
-  override def timeWindow(keyedStream: KeyedStream[ChannelFreshness, String]): WindowedStream[ChannelFreshness, String, TimeWindow] = {
-    keyedStream.timeWindow(Time.seconds(3))
-  }
-
-  /**
    * 聚合操作实现
    **/
   override def reduce(windowStream: WindowedStream[ChannelFreshness, String, TimeWindow]): DataStream[ChannelFreshness] = {

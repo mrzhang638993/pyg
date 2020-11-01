@@ -2,6 +2,7 @@ package com.itheima.realprocess.task
 
 import com.itheima.realprocess.bean.{ChannelPvUv, ChannelRealHot, ClickLogWide}
 import org.apache.flink.streaming.api.scala.{DataStream, KeyedStream, WindowedStream}
+import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 
 trait BaseTask[T] {
@@ -18,7 +19,9 @@ trait BaseTask[T] {
   /**
    * 定义时间窗口操作
    * */
-  def timeWindow(keyedStream:KeyedStream[T, String]):WindowedStream[T, String, TimeWindow]
+  def timeWindow(keyedStream:KeyedStream[T, String]):WindowedStream[T, String, TimeWindow]={
+    keyedStream.timeWindow(Time.seconds(3))
+  }
 
   /**
    * 聚合操作实现
