@@ -4,8 +4,8 @@ import java.lang
 import java.util.Properties
 
 import com.alibaba.fastjson.{JSON, JSONObject}
-import com.itheima.realprocess.bean.{ClickLog, ClickLogWide, Message}
-import com.itheima.realprocess.task.PreTask
+import com.itheima.realprocess.bean.{ChannelRealHot, ClickLog, ClickLogWide, Message}
+import com.itheima.realprocess.task.{ChannelRealHotTask, PreTask}
 import com.itheima.realprocess.util.GlobalConfigUtil
 import org.apache.flink.api.scala._
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
@@ -14,7 +14,7 @@ import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.watermark.Watermark
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09
+import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer010, FlinkKafkaConsumer09}
 import org.apache.flink.streaming.util.serialization.SimpleStringSchema
 /**
  * 初始化flink的流式环境
@@ -46,7 +46,7 @@ object App {
     // 加载本地集合数据查看是否可以执行的
     val properties=new Properties();
     properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)
-   properties.put("zookeeper.connect",GlobalConfigUtil.ZOOKEEPER_CONNECT)
+  // properties.put("zookeeper.connect",GlobalConfigUtil.ZOOKEEPER_CONNECT)
     properties.put("input.topic",GlobalConfigUtil.INPUT_TOPIC)
     properties.put("group.id",GlobalConfigUtil.GROUP_ID)
    properties.put("enable.auto.commit",GlobalConfigUtil.ENABLE_AUTO_COMMIT)
@@ -82,10 +82,12 @@ object App {
         currentTimestamp
       }
     })
-    //  执行数据的预处理操作实现
+    //  执行数据的预处理操作实现,拓宽字段
     val etlValue: DataStream[ClickLogWide] = PreTask.process(waterValue)
-    etlValue.print()
+    // 进行数据转换操作
+    val channelRealHotValues: DataStream[ChannelRealHot] = ChannelRealHotTask.process(etlValue)
     //  增加检查点的支持操作和实现
+    channelRealHotValues.print()
     env.execute("real-process")
   }
 }

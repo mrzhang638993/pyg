@@ -7,6 +7,10 @@ import org.apache.commons.lang3.StringUtils
 import org.apache.flink.streaming.api.scala.DataStream
 import org.apache.flink.api.scala._
 
+
+/**
+ * 执行原始数据的拓宽处理
+ * */
 object PreTask {
   //  数据预处理操作，对数据执行操作实现
   def process(waterValue: DataStream[Message]): DataStream[ClickLogWide] = {
