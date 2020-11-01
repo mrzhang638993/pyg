@@ -94,6 +94,9 @@ object ChannelNetworkTask  extends  BaseTask[ChannelNetwork]{
           totalUvCount = value.uv
         }
         HbaseUtil.putMapData(tableName, clfName, rowKey, Map(
+          channelIdColumn->value.channelID,
+          networkColumn->value.network,
+          dateColumn->value.date,
           pvColumn -> totalPvCount,
           uvColumn -> totalUvCount,
           newCountColumn -> newCount,
