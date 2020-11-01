@@ -1,8 +1,7 @@
 package com.itheima.realprocess.task
 
-import com.itheima.realprocess.bean.{ChannelBrowser, ChannelNetwork, ClickLogWide}
+import com.itheima.realprocess.bean.{ChannelBrowser,ClickLogWide}
 import com.itheima.realprocess.util.HbaseUtil
-import org.apache.commons.lang3.StringUtils
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.scala.{DataStream, KeyedStream, WindowedStream}
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
