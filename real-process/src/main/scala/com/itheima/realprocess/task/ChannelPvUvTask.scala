@@ -5,7 +5,6 @@ import com.itheima.realprocess.util.HbaseUtil
 import org.apache.flink.streaming.api.scala.{DataStream, KeyedStream, WindowedStream}
 import org.apache.flink.api.scala._
 import org.apache.flink.streaming.api.functions.sink.SinkFunction
-import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 
 object ChannelPvUvTask  extends BaseTask[ChannelPvUv]{
