@@ -6,8 +6,7 @@ import com.alibaba.otter.canal.client.CanalConnector;
 import com.alibaba.otter.canal.client.CanalConnectors;
 import com.alibaba.otter.canal.protocol.CanalEntry;
 import com.alibaba.otter.canal.protocol.Message;
-import com.itheima.canal_kafka.util.GlobalConfigUtil;
-import com.itheima.canal_kafka.util.KafkaSender;
+import com.itheima.canal.kafka.util.GlobalConfigUtil;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
@@ -162,32 +161,25 @@ public class CanalClient {
 
 
     public static void main(String[] args) {
-
         // 加载配置文件
         String host = GlobalConfigUtil.canalHost;
         int port = Integer.parseInt(GlobalConfigUtil.canalPort);
         String instance = GlobalConfigUtil.canalInstance;
         String username = GlobalConfigUtil.mysqlUsername;
         String password = GlobalConfigUtil.mysqlPassword;
-
         // 获取Canal连接
         CanalConnector conn = getConn(host, port, instance, username, password);
-
         // 从binlog中读取数据
         int batchSize = 100;
         int emptyCount = 1;
-
         try {
             conn.connect();
             conn.subscribe(".*\\..*");
             conn.rollback();
-
             int totalCount = 120; //循环次数
-
             while (totalCount > emptyCount) {
                 // 获取数据
                 Message message = conn.getWithoutAck(batchSize);
-
                 long id = message.getId();
                 int size = message.getEntries().size();
                 if (id == -1 || size == 0) {
@@ -197,10 +189,8 @@ public class CanalClient {
                     analysis(message.getEntries(), emptyCount);
                     emptyCount++;
                 }
-
                 // 确认消息
                 conn.ack(message.getId());
-
             }
         } catch (Exception e) {
             e.printStackTrace();
