@@ -1,10 +1,11 @@
 package com.itheima.syncdb
 
-import org.apache.flink.runtime.state.StateBackend
+
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.environment.CheckpointConfig
-import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
+import org.apache.flink.api.scala._
 
 object App {
   def main(args: Array[String]): Unit = {
@@ -25,5 +26,8 @@ object App {
     env.getCheckpointConfig.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
     // 执行相关的操作机制实现
     env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/sync-db"))
+    val value: DataStream[Int] = env.fromCollection(List(1, 2, 3))
+    value.print()
+    env.execute()
   }
 }
