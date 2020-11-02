@@ -17,7 +17,6 @@ object App {
     // topic: String, valueDeserializer: DeserializationSchema[T], props: Properties
     val properties = new Properties()
     properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)
-    properties.put("zookeeper.connect",GlobalConfigUtil.ZOOKEEPER_CONNECT)
     properties.put("group.id",GlobalConfigUtil.GROUP_ID)
     properties.put("enable.auto.commit",GlobalConfigUtil.ENABLE_AUTO_COMMIT)
     properties.put("auto.commit.interval.ms",GlobalConfigUtil.AUTO_COMMIT_INTERVAL_MS)
