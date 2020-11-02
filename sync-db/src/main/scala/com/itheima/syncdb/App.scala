@@ -12,9 +12,8 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09
 object App {
   def main(args: Array[String]): Unit = {
     val env: StreamExecutionEnvironment = FlinkUtil.init()
-    env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/sync-db"))
+    env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/sync-db/"))
     // 整合构造kafka操作
-    // topic: String, valueDeserializer: DeserializationSchema[T], props: Properties
     val properties = new Properties()
     properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)
     properties.put("group.id",GlobalConfigUtil.GROUP_ID)
