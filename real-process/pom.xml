@@ -26,15 +26,12 @@
             <artifactId>kafka_${scala.version}</artifactId>
             <version>0.9.0.1</version>
         </dependency>
-
-
         <!--flink对接kafka：导入flink使用kafka的依赖-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka-0.10_${scala.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
-
         <!--批处理-->
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -47,7 +44,6 @@
             <artifactId>flink-scala_${scala.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
-
         <!--模块二 流处理-->
         <dependency>
             <groupId>org.apache.flink</groupId>
@@ -59,35 +55,28 @@
             <artifactId>flink-streaming-java_${scala.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
-
         <!--数据落地flink和hbase的集成依赖-->
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-hbase_${scala.version}</artifactId>
             <version>${flink.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-client</artifactId>
             <version>${hbase.version}</version>
         </dependency>
-
-
         <!--<dependency>
             <groupId>org.apache.hbase</groupId>
             <artifactId>hbase-server</artifactId>
             <version>2.0.0</version>
         </dependency>-->
-
-
         <!--hbase依赖于hadoop-->
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-common</artifactId>
             <version>${hadoop.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-hdfs</artifactId>
@@ -100,7 +89,6 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
         <dependency>
             <groupId>org.apache.hadoop</groupId>
             <artifactId>hadoop-client</artifactId>
@@ -113,14 +101,13 @@
                 </exclusion>
             </exclusions>
         </dependency>
-
-
         <!--对象和json 互相转换的-->
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.44</version>
         </dependency>
+
     </dependencies>
 
 
