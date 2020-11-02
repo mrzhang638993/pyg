@@ -12,7 +12,7 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09
 object App {
   def main(args: Array[String]): Unit = {
     val env: StreamExecutionEnvironment = FlinkUtil.init()
-    env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/sync-db/"))
+    env.setStateBackend(new FsStateBackend("hdfs://node01:8020/sync-db/"))
     // 整合构造kafka操作
     val properties = new Properties()
     properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)

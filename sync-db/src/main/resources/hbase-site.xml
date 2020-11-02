@@ -23,7 +23,7 @@
 <configuration>
         <property>
                 <name>hbase.rootdir</name>
-                <value>hdfs://node01:8020/hbase</value>
+                <value>hdfs://cdh1:8020/hbase</value>
         </property>
 
         <property>
@@ -49,7 +49,7 @@
         </property>
 
         <property>
-                <name>hbase.zookeeper.property.dataDir</name>
+             <name>hbase.zookeeper.property.dataDir</name>
          <value>/export/servers/zookeeper-3.4.9/zkdatas</value>
         </property>
 
