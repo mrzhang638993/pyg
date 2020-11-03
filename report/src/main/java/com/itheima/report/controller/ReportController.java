@@ -30,7 +30,7 @@ public class ReportController {
         message.setTimestamp(System.currentTimeMillis());
         String msgInfo = JSON.toJSONString(message);
         try {
-            kafkaTemplate.send("pyg1",msgInfo);
+            kafkaTemplate.send("pyg",msgInfo);
             map.put("success","true");
             return map;
         }catch (Exception e){

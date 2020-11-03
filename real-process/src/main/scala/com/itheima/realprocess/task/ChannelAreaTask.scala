@@ -14,7 +14,7 @@ object ChannelAreaTask  extends  BaseTask[ChannelArea]{
    **/
   override def map(clickLogWide: DataStream[ClickLogWide]): DataStream[ChannelArea] = {
     clickLogWide.flatMap[ChannelArea]{
-       clickLog=>{
+       clickLog:ClickLogWide=>{
          val isOld = (isNew: Int, isDateNew: Int) => if (isNew == 0 && isDateNew == 1) 1 else 0
          List(
            ChannelArea(clickLog.channelID.toString,clickLog.address,clickLog.yearMonth,clickLog.count,clickLog.isMonthNew,clickLog.isNew,isOld(clickLog.isNew,clickLog.isMonthNew)),

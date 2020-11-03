@@ -22,6 +22,7 @@ import org.apache.flink.streaming.util.serialization.SimpleStringSchema
 object App {
 
   def main(args: Array[String]): Unit = {
+    System.setProperty("HADOOP_USER_NAME", "root")
     // 获取流式环境
     val env: StreamExecutionEnvironment = StreamExecutionEnvironment.getExecutionEnvironment
     // 设置流的处理时间为eventTime的处理时间的.避免网络延时操作和实现机制操作的
@@ -42,7 +43,7 @@ object App {
     // 当程序关闭的时候，触发额外的checkpoint操作的
     env.getCheckpointConfig.enableExternalizedCheckpoints(CheckpointConfig.ExternalizedCheckpointCleanup.RETAIN_ON_CANCELLATION)
     //  设置checkpoint的存储信息
-    env.setStateBackend(new FsStateBackend("hdfs://cdh1:8020/flink-checkpoint/"))
+    env.setStateBackend(new FsStateBackend("hdfs://node01:8020/flink-checkpoint/"))
     // 加载本地集合数据查看是否可以执行的
     val properties=new Properties();
     properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)
