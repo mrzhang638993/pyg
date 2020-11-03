@@ -7,7 +7,7 @@ import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.api.scala._
-import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09
+import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer010, FlinkKafkaConsumer09}
 
 object App {
   def main(args: Array[String]): Unit = {
@@ -20,7 +20,7 @@ object App {
     properties.put("enable.auto.commit",GlobalConfigUtil.ENABLE_AUTO_COMMIT)
     properties.put("auto.commit.interval.ms",GlobalConfigUtil.AUTO_COMMIT_INTERVAL_MS)
     properties.put("auto.offset.reset",GlobalConfigUtil.AUTO_OFFSET_RESET)
-    val flinkKafkaConsumer = new FlinkKafkaConsumer09[String](
+    val flinkKafkaConsumer = new FlinkKafkaConsumer010[String](
       GlobalConfigUtil.INPUT_TOPIC,
       new SimpleStringSchema(), properties
     )
