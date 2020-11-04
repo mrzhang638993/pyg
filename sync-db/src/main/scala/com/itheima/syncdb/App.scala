@@ -2,6 +2,7 @@ package com.itheima.syncdb
 
 import java.util.Properties
 
+import com.itheima.syncdb.util.FlinkUtil.init
 import com.itheima.syncdb.util.{FlinkUtil, GlobalConfigUtil}
 import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
@@ -11,20 +12,8 @@ import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer010, Flink
 
 object App {
   def main(args: Array[String]): Unit = {
-    System.setProperty("HADOOP_USER_NAME", "root")
-    val env: StreamExecutionEnvironment = FlinkUtil.init()
-    env.setStateBackend(new FsStateBackend("hdfs://node01:8020/sync-db/"))
-    // 整合构造kafka操作
-    val properties = new Properties()
-    properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)
-    //properties.put("group.id",GlobalConfigUtil.GROUP_ID)
-    properties.put("enable.auto.commit",GlobalConfigUtil.ENABLE_AUTO_COMMIT)
-    properties.put("auto.commit.interval.ms",GlobalConfigUtil.AUTO_COMMIT_INTERVAL_MS)
-    properties.put("auto.offset.reset",GlobalConfigUtil.AUTO_OFFSET_RESET)
-    val flinkKafkaConsumer = new FlinkKafkaConsumer09[String](
-      GlobalConfigUtil.INPUT_TOPIC,
-      new SimpleStringSchema(), properties
-    )
+    val env: StreamExecutionEnvironment = init()
+    val flinkKafkaConsumer: FlinkKafkaConsumer09[String] = FlinkUtil.initKafka(env)
     //增加数据源信息
     val kafkaDataStream: DataStream[String] = env.addSource(flinkKafkaConsumer)
     kafkaDataStream.print()

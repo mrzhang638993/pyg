@@ -1,8 +1,13 @@
 package com.itheima.syncdb.util
 
+import java.util.Properties
+
+import org.apache.flink.api.common.serialization.SimpleStringSchema
+import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.CheckpointingMode
 import org.apache.flink.streaming.api.environment.CheckpointConfig
 import org.apache.flink.streaming.api.scala.StreamExecutionEnvironment
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09
 
 object FlinkUtil {
 
@@ -25,4 +30,24 @@ object FlinkUtil {
       // 返回数据结果
       env
     }
+
+  /**
+   * 初始化kafka的执行环境信息
+   * */
+   def initKafka(env: StreamExecutionEnvironment): FlinkKafkaConsumer09[String] ={
+     System.setProperty("HADOOP_USER_NAME", "root")
+     env.setStateBackend(new FsStateBackend("hdfs://node01:8020/sync-db/"))
+     // 整合构造kafka操作
+     val properties = new Properties()
+     properties.put("bootstrap.servers",GlobalConfigUtil.BOOTSTRAP_SERVERS)
+     //properties.put("group.id",GlobalConfigUtil.GROUP_ID)
+     properties.put("enable.auto.commit",GlobalConfigUtil.ENABLE_AUTO_COMMIT)
+     properties.put("auto.commit.interval.ms",GlobalConfigUtil.AUTO_COMMIT_INTERVAL_MS)
+     properties.put("auto.offset.reset",GlobalConfigUtil.AUTO_OFFSET_RESET)
+     val flinkKafkaConsumer = new FlinkKafkaConsumer09[String](
+       GlobalConfigUtil.INPUT_TOPIC,
+       new SimpleStringSchema(), properties
+     )
+     flinkKafkaConsumer
+   }
 }
