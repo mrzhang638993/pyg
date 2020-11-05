@@ -1,0 +1,10 @@
+{
+  "emptyCount": 4,
+  "logFileName": "mysql-bin.000002",
+  "dbName": "pyg",
+  "logFileOffset": 6964,
+  "eventType": "INSERT",
+  "columnValueList": [],
+  "tableName": "commodity",
+  "timestamp": 1604533281000
+}
