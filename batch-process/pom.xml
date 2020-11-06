@@ -154,7 +154,7 @@
                             <transformers>
                                 <transformer
                                         implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.itheima.syncdb.App</mainClass>
+                                    <mainClass>com.itheima.batch.process.App</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
