@@ -1,5 +1,7 @@
 package com.itheima.batch.process
 
+import com.itheima.batch.process.bean.{OrderRecord, OrderRecordWide}
+import com.itheima.batch.process.task.PreprocessTask
 import com.itheima.batch.process.util.HBaseTableInputFormat
 import org.apache.flink.api.java.tuple
 import org.apache.flink.api.scala.ExecutionEnvironment
@@ -17,7 +19,13 @@ object App {
     //  测试输出
     val hbaseValue: DataSet[tuple.Tuple2[String, String]] = env.createInput(new HBaseTableInputFormat("mysql.pyg.orderRecord"))
     //  打印输出操作实现
-    hbaseValue.print()
-    env.execute()
+    val orderRecord: DataSet[OrderRecord] = hbaseValue.map {
+      item => {
+        OrderRecord(item.f1)
+      }
+    }
+    // 进行数据的预处理操作实现
+    val wideDataSet: DataSet[OrderRecordWide] = PreprocessTask.process(orderRecord)
+    wideDataSet.print()
   }
 }
