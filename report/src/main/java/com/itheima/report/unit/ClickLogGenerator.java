@@ -22,37 +22,37 @@ import java.util.Random;
  * 点击流日志模拟器
  */
 public class ClickLogGenerator {
-    private static Long[] channelID = new Long[]{1l,2l,3l,4l,5l,6l,7l,8l,9l,10l,11l,12l,13l,14l,15l,16l,17l,18l,19l,20l};//频道id集合
-    private static Long[] categoryID = new Long[]{1l,2l,3l,4l,5l,6l,7l,8l,9l,10l,11l,12l,13l,14l,15l,16l,17l,18l,19l,20l};//产品类别id集合
-    private static Long[] produceID = new Long[]{1l,2l,3l,4l,5l,6l,7l,8l,9l,10l,11l,12l,13l,14l,15l,16l,17l,18l,19l,20l};//产品id集合
-    private static Long[] userID = new Long[]{1l,2l,3l,4l,5l,6l,7l,8l,9l,10l,11l,12l,13l,14l,15l,16l,17l,18l,19l,20l};//用户id集合
+    private static final Long[] channelID = new Long[]{1l,2l,3l,4l,5l,6l,7l,8l,9l,10l,11l,12l,13l,14l,15l,16l,17l,18l,19l,20l};//频道id集合
+    private static final Long[] categoryID = new Long[]{1l,2l,3l,4l,5l,6l,7l,8l,9l,10l,11l,12l,13l,14l,15l,16l,17l,18l,19l,20l};//产品类别id集合
+    private static final Long[] produceID = new Long[]{1l,2l,3l,4l,5l,6l,7l,8l,9l,10l,11l,12l,13l,14l,15l,16l,17l,18l,19l,20l};//产品id集合
+    private static final Long[] userID = new Long[]{1l,2l,3l,4l,5l,6l,7l,8l,9l,10l,11l,12l,13l,14l,15l,16l,17l,18l,19l,20l};//用户id集合
 
     /**
      * 地区
      */
-    private static String[] contrys = new String[]{"china"};//地区-国家集合
-    private static String[] provinces = new String[]{"HeNan","HeBeijing"};//地区-省集合
-    private static String[] citys = new String[]{"ShiJiaZhuang","ZhengZhou", "LuoYang"};//地区-市集合
+    private static final String[] contrys = new String[]{"china"};//地区-国家集合
+    private static final String[] provinces = new String[]{"HeNan","HeBeijing"};//地区-省集合
+    private static final String[] citys = new String[]{"ShiJiaZhuang","ZhengZhou", "LuoYang"};//地区-市集合
 
     /**
      *网络方式
      */
-    private static String[] networks = new String[]{"电信","移动","联通"};
+    private static final String[] networks = new String[]{"电信","移动","联通"};
 
     /**
      * 来源方式
      */
-    private static String[] sources = new String[]{"直接输入","百度跳转","360搜索跳转","必应跳转"};
+    private static final String[] sources = new String[]{"直接输入","百度跳转","360搜索跳转","必应跳转"};
 
     /**
      * 浏览器
      */
-    private static String[] browser = new String[]{"火狐","qq浏览器","360浏览器","谷歌浏览器"};
+    private static final String[] browser = new String[]{"火狐","qq浏览器","360浏览器","谷歌浏览器"};
 
     /**
      * 打开时间 离开时间
      */
-    private static List<Long[]> usetimelog = producetimes();
+    private static final List<Long[]> usetimelog = producetimes();
     //获取时间
     public static List<Long[]> producetimes(){
         List<Long[]> usetimelog = new ArrayList<Long[]>();
@@ -91,7 +91,7 @@ public class ClickLogGenerator {
             HttpPost post = new HttpPost(url);
             JSONObject response = null;
             try {
-                StringEntity s = new StringEntity(json.toString(), "utf-8");
+                StringEntity s = new StringEntity(json, "utf-8");
                 s.setContentEncoding("utf-8");
                 // 发送json数据需要设置contentType
                 s.setContentType("application/json");

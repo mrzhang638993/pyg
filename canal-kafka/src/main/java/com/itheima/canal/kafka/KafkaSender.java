@@ -12,7 +12,7 @@ import java.util.Properties;
  * Kafka生产消息工具类
  */
 public class KafkaSender {
-    private String topic;
+    private final String topic;
 
     public KafkaSender(String topic){
         super();

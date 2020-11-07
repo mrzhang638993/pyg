@@ -5,7 +5,7 @@ import java.util.ResourceBundle;
 public class GlobalConfigUtil {
     // 获取一个资源加载器
     // 资源加载器会自动去加载CLASSPATH中的application.properties配置文件
-    private static ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
+    private static final ResourceBundle resourceBundle = ResourceBundle.getBundle("application");
     // 使用ResourceBundle.getString方法来读取配置
     public static String canalHost = resourceBundle.getString("canal.host");
     public static String canalPort = resourceBundle.getString("canal.port");

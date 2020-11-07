@@ -1,7 +1,10 @@
 package com.itheima.batch.process.task
 
+import java.io.{File, FileOutputStream, OutputStream}
 import java.util.Properties
 
+import com.alibaba.fastjson.JSON
+import com.itheima.batch.process.bean.{Message, MessageWide}
 import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.runtime.state.filesystem.FsStateBackend
 import org.apache.flink.streaming.api.environment.CheckpointConfig
@@ -9,6 +12,8 @@ import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010
 import org.apache.flink.api.scala._
+import org.apache.flink.streaming.api.functions.sink.{RichSinkFunction, SinkFunction}
+
 
 
 /**
@@ -46,10 +51,48 @@ object Exec2 {
     properties.put("group.id","exec1")
     properties.put("enable.auto.commit","true")
     properties.put("auto.commit.interval.ms","5000")
-    properties.put("auto.offset.reset","earliest")
+    properties.put("auto.offset.reset","latest")
     val kafkaDataStream = new FlinkKafkaConsumer010[String]("exec1", new SimpleStringSchema(), properties)
     val consumerDataStream: DataStream[String] = env.addSource(kafkaDataStream)
-    consumerDataStream.print()
+    val messageValue: DataStream[Message] = consumerDataStream.map {
+      item => getMessage(item)
+    }
+    //下面开始相关的数据操作实现
+    val messageAddValue: DataStream[MessageWide] = messageValue.map {
+      message => {
+        val wide: MessageWide = MessageWide(message)
+        wide
+      }
+    }
+    messageAddValue.addSink(new MySinkFunction())
     env.execute("exec2")
   }
+
+  def  getMessage(json:String):Message={
+    val message: Message = JSON.parseObject(json, classOf[Message])
+    message
+  }
 }
+
+class MySinkFunction extends  RichSinkFunction[MessageWide] with Serializable {
+  private  val fileName="E:\\idea_works\\pyg\\batch-process\\src\\main\\scala\\com\\itheima\\batch\\process\\task\\result.log"
+
+  private  var file:File=new File(fileName)
+  private var fos:FileOutputStream=null
+
+  override def invoke(value: MessageWide): Unit = {
+    import org.json4s._
+    import org.json4s.jackson.Serialization
+    import org.json4s.jackson.Serialization.write
+
+    implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
+    val str: String =  write(value)
+    fos=new FileOutputStream(file,true)
+    fos.write(str.getBytes())
+    fos.write("\n".getBytes())
+    fos.flush()
+    fos.close()
+  }
+}
+
+
