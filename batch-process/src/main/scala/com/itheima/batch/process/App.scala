@@ -18,5 +18,6 @@ object App {
     val hbaseValue: DataSet[tuple.Tuple2[String, String]] = env.createInput(new HBaseTableInputFormat("mysql.pyg.orderRecord"))
     //  打印输出操作实现
     hbaseValue.print()
+    env.execute()
   }
 }

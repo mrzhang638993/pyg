@@ -1,7 +1,6 @@
 package com.itheima.batch.process.util
 
 import com.alibaba.fastjson.JSONObject
-import org.apache.flink.addons.hbase.TableInputFormat
 import org.apache.hadoop.hbase.client.{Result, Scan}
 import org.apache.flink.api.java.tuple.Tuple2
 import org.apache.hadoop.hbase.{Cell, CellUtil}
@@ -15,7 +14,7 @@ import org.apache.hadoop.hbase.util.Bytes
  * 实现的抽象方法：
  * 1.Scan 对应的返回的是scan对象的，
  * */
-class HBaseTableInputFormat(var tableName:String)  extends  TableInputFormat[Tuple2[String,String]]{
+class HBaseTableInputFormat(var tableName:String)  extends  ItheimaTableInputFormat[Tuple2[String,String]]{
   /**
    * 返回scan对象的
    * */
