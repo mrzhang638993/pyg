@@ -3,6 +3,8 @@ package com.itheima.batch.process.task
 
 import java.util.Properties
 
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.serializer.SerializerFeature
 import com.itheima.batch.process.bean.Message
 import org.apache.flink.api.common.io.OutputFormat
 import org.apache.flink.configuration.Configuration
@@ -10,14 +12,14 @@ import org.apache.kafka.clients.producer.{KafkaProducer, ProducerRecord}
 
 class KafkaOutPut  extends  OutputFormat[Message]{
 
-  private val bootstrapServer="192.168.1.201:9092,192.168.1.202:9092,192.168.1.203:9092"
+  private val bootstrapServer="node01:9092,node02:9092,node03:9092"
   private val zookeeperConnect="node01:2181,node02:2181,node03:2181"
   private val inputTopic:String="exec1"
   private val groupId:String="exec1"
   private val enableAutoCommit:Boolean=true
   private val autoCommitIntervalMs:Boolean=true
   private val autoOffsetReset:String="latest"
-  private var producer:KafkaProducer[String,Message]=null
+  private var producer:KafkaProducer[String,String]=null
 
   override def configure(parameters: Configuration): Unit = {
 
@@ -34,7 +36,8 @@ class KafkaOutPut  extends  OutputFormat[Message]{
 
   override def writeRecord(record: Message): Unit = {
     // 数据进行处理操作实现,发送数据进行操作
-    producer.send(new ProducerRecord[String,Message](inputTopic,record))
+    val str: String = JSON.toJSONString(record, SerializerFeature.PrettyFormat)
+    producer.send(new ProducerRecord[String,String](inputTopic,str))
   }
 
   override def close(): Unit = {
