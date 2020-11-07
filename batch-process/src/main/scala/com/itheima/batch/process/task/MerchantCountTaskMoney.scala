@@ -1,6 +1,7 @@
 package com.itheima.batch.process.task
 
 import com.itheima.batch.process.bean.{MerchantCountTask, OrderRecordWide}
+import com.itheima.batch.process.util.HBaseUtil
 import org.apache.flink.api.scala.DataSet
 import org.apache.flink.api.scala._
 
@@ -27,8 +28,19 @@ object MerchantCountTaskMoney {
       // 数据写入到hbase中进行操作实现
       reduceValue.collect().foreach{
          reduces=>{
-           val  tableName:String=""
-           val  ctfName:String=""
+           val  tableName:String="analysis_merchant"
+           val  rowKey:String=reduces.merchantId+":"+reduces.date
+           val  clfName:String="info"
+           val merchantIdColumn:String="merchantId"
+           val dateColumn:String="date"
+           val moneyCountColumn:String="moneyCount"
+           val countColumn:String="countColumn"
+           HBaseUtil.putMapData(tableName,rowKey,clfName,Map(
+             merchantIdColumn->reduces.merchantId,
+             dateColumn->reduces.date,
+             moneyCountColumn->reduces.moneyCount,
+             countColumn->reduces.count
+           ))
          }
       }
     }

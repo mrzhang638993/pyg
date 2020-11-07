@@ -1,7 +1,7 @@
 package com.itheima.batch.process
 
 import com.itheima.batch.process.bean.{OrderRecord, OrderRecordWide}
-import com.itheima.batch.process.task.{PaymethodMoneyCountTask, PreprocessTask}
+import com.itheima.batch.process.task.{MerchantCountTaskMoney, PaymethodMoneyCountTask, PreprocessTask}
 import com.itheima.batch.process.util.HBaseTableInputFormat
 import org.apache.flink.api.java.tuple
 import org.apache.flink.api.scala.ExecutionEnvironment
@@ -28,5 +28,7 @@ object App {
     val wideDataSet: DataSet[OrderRecordWide] = PreprocessTask.process(orderRecord)
     // 执行数据的处理和准备操作实现
     PaymethodMoneyCountTask.process(wideDataSet)
+    // 执行商家维度数据分析操作实现
+    MerchantCountTaskMoney.process(wideDataSet)
   }
 }
