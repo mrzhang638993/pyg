@@ -64,7 +64,8 @@ object Exec2 {
         wide
       }
     }
-    messageAddValue.addSink(new MySinkFunction())
+    messageAddValue.writeAsCsv("E:\\idea_works\\pyg\\batch-process\\src\\main\\scala\\com\\itheima\\batch\\process\\task\\result1.log")
+    //messageAddValue.addSink(new MySinkFunction())
     env.execute("exec2")
   }
 
