@@ -14,24 +14,25 @@ object PreprocessTask {
     * */
    def process(orderRecord: DataSet[OrderRecord]):DataSet[OrderRecordWide]={
         //  执行数据的预处理操作实现
-     orderRecord.map{
-       orderRecordData=>OrderRecordWide(
-         orderRecordData.benefitAmount,
-         orderRecordData.orderAmount,
-         orderRecordData.payAmount,
-         orderRecordData.activityNum,
-         orderRecordData.createTime,
-         orderRecordData.merchantId,
-         orderRecordData.orderId,
-         orderRecordData.payTime,
-         orderRecordData.payMethod,
-         orderRecordData.voucherAmount,
-         orderRecordData.commodityId,
-         orderRecordData.userId,
-         formatTime(orderRecordData.createTime,"yyyy-MM-dd"),
-         formatTime(orderRecordData.createTime,"yyyy-MM"),
-         formatTime(orderRecordData.createTime,"yyyy")
-       )
+    orderRecord.map {
+       orderRecordData =>
+         OrderRecordWide(
+           orderRecordData.benefitAmount,
+           orderRecordData.orderAmount,
+           orderRecordData.payAmount,
+           orderRecordData.activityNum,
+           orderRecordData.createTime,
+           orderRecordData.merchantId,
+           orderRecordData.orderId,
+           orderRecordData.payTime,
+           orderRecordData.payMethod,
+           orderRecordData.voucherAmount,
+           orderRecordData.commodityId,
+           orderRecordData.userId,
+           formatTime(orderRecordData.createTime, "yyyy-MM-dd"),
+           formatTime(orderRecordData.createTime, "yyyy-MM"),
+           formatTime(orderRecordData.createTime, "yyyy")
+         )
      }
    }
 
