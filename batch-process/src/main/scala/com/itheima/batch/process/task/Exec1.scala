@@ -3,9 +3,6 @@ package com.itheima.batch.process.task
 import com.itheima.batch.process.bean.Message
 import org.apache.flink.api.scala.{DataSet, ExecutionEnvironment}
 import org.apache.flink.api.scala._
-import org.apache.flink.table.api.TableEnvironment
-import org.apache.flink.table.api.scala.BatchTableEnvironment
-import org.apache.kafka.clients.producer.KafkaProducer
 /**
  * 执行数据操作实现
  * */

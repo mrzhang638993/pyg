@@ -35,8 +35,14 @@ class KafkaOutPut  extends  OutputFormat[Message]{
   }
 
   override def writeRecord(record: Message): Unit = {
-    // 数据进行处理操作实现,发送数据进行操作
-    val str: String = JSON.toJSONString(record, SerializerFeature.PrettyFormat)
+
+    import org.json4s._
+    import org.json4s.jackson.Serialization
+    import org.json4s.jackson.Serialization.write
+
+    implicit val formats: AnyRef with Formats = Serialization.formats(NoTypeHints)
+
+    val str: String =  write(record)
     producer.send(new ProducerRecord[String,String](inputTopic,str))
   }
 
