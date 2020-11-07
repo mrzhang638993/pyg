@@ -20,25 +20,21 @@ object Message{
 
   def apply(json:String): Message ={
     //  名称不对应的
-    println(json)
-    val jsonObject: JSONObject = JSON.parseObject(json, classOf[JSONObject])
-    val mapValue: AnyRef = jsonObject.get("message")
-    if(mapValue!=null){
-      println(mapValue)
-    }
-    /*new Message(
-      mapValue.get("ad_campaign").toString,
-      mapValue.get("ad_media").toString,
-      mapValue.get("ad_source").toString,
-      mapValue.get("city").toString,
-      mapValue.get("corpurin").toString,
-      mapValue.get("device_type").toString,
-      mapValue.get("host").toString,
-      mapValue.get("t_id").get.toInt,
-      mapValue.get("timestamp").toString,
-      mapValue.get("userId").toString
-    )*/
-    null
+    val messageTotal: TotalMessage = JSON.parseObject(json, classOf[TotalMessage])
+    val message: String = messageTotal.message
+    val mapValue: JSONObject = JSON.parseObject(message, classOf[JSONObject])
+    Message(
+      mapValue.getOrDefault("ad_campaign","").toString,
+      mapValue.getOrDefault("ad_media","").toString,
+      mapValue.getOrDefault("ad_source","").toString,
+      mapValue.getOrDefault("city","").toString,
+      mapValue.getOrDefault("corpurin","").toString,
+      mapValue.getOrDefault("device_type","").toString,
+      mapValue.getOrDefault("host","").toString,
+      mapValue.getOrDefault("t_id","0").asInstanceOf[Int],
+      mapValue.getOrDefault("timestamp","").toString,
+      mapValue.getOrDefault("userId","").toString,
+      mapValue.getOrDefault("click_user_id","").toString
+    )
   }
-
 }

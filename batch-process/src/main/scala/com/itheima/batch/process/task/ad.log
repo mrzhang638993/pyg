@@ -41,4 +41,3 @@
 {"count":1,"message":"{\"ad_campaign\":\"adc2\",\"ad_media\":\"adm1\",\"ad_source\":\"ads2\",\"city\":\"beijing\",\"corpurin\":9,\"device_type\":\"pc\",\"host\":\"google.com\",\"t_id\":14,\"timestamp\":\"2020-04-12T05:21:48.708+0800\",\"user_id\":\"13\"}","timestamp":1586683309712}
 {"count":1,"message":"{\"ad_campaign\":\"adc3\",\"ad_media\":\"adm1\",\"ad_source\":\"ads1\",\"city\":\"shanghai\",\"click_user_id\":\"9\",\"corpurin\":12,\"device_type\":\"other\",\"host\":\"baidu.com\",\"t_id\":4,\"timestamp\":\"2020-04-12T05:21:49.713+0800\",\"user_id\":\"9\"}","timestamp":1586683310718}
 {"count":1,"message":"{\"ad_campaign\":\"adc3\",\"ad_media\":\"adm1\",\"ad_source\":\"ads1\",\"city\":\"guangzhou\",\"corpurin\":7,\"device_type\":\"other\",\"host\":\"baidu.com\",\"t_id\":7,\"timestamp\":\"2020-04-12T05:21:50.720+0800\",\"user_id\":\"16\"}","timestamp":1586683311723}
-
