@@ -140,7 +140,7 @@ public class AdClickLogGenerator {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            //send("http://localhost:8888/receive", jonstr);
+            send("http://localhost:8888/adReceive", jsonStr);
         }
     }
 }
