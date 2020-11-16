@@ -12,6 +12,7 @@ object  GlobalConfigUtil{
   val AD_INPUT_TOPIC:String=config.getString("ad.input.topic")
    val GROUP_ID: String = config.getString("group.id")
     val AD_GROUP_ID:String=config.getString("ad.group.id")
+   val AD_PROCESS_TOPIC: String = config.getString("ad.process.topic")
    val ENABLE_AUTO_COMMIT: String = config.getString("enable.auto.commit")
    val AUTO_COMMIT_INTERVAL_MS: String = config.getString("auto.commit.interval.ms")
    val AUTO_OFFSET_RESET: String = config.getString("auto.offset.reset")
