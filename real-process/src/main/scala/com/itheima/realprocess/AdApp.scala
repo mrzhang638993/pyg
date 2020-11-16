@@ -1,22 +1,20 @@
 package com.itheima.realprocess
 
-import java.lang
 import java.text.SimpleDateFormat
 import java.util.Properties
-
 import com.alibaba.fastjson.{JSON, JSONObject}
-import com.itheima.realprocess.bean.{AdClickLog, AdClickLogWide, ClickLog, ClickLogWide, Message}
-import com.itheima.realprocess.task.{ChannelFreshnessTask, ChannelPvUvTask, ChannelRealHotTask, PreTask, PreprocessTask}
+import com.itheima.realprocess.bean.{AdClickLog, AdClickLogWide}
+import com.itheima.realprocess.task.{PreprocessTask}
 import com.itheima.realprocess.util.GlobalConfigUtil
-import org.apache.flink.runtime.state.filesystem.FsStateBackend
-import org.apache.flink.streaming.api.environment.CheckpointConfig
 import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.watermark.Watermark
-import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
+import org.apache.flink.streaming.api.{ TimeCharacteristic}
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09
 import org.apache.flink.streaming.util.serialization.SimpleStringSchema
 import org.apache.flink.api.scala._
+import org.json4s.DefaultFormats
+import  org.json4s.jackson.Serialization.{read,write}
 
 /**
  * 初始化flink的流式环境
@@ -87,9 +85,16 @@ object AdApp {
     //  执行数据的预处理操作实现,拓宽字段,增加
     val clickDataStream:DataStream[AdClickLogWide]=PreprocessTask.process(waterValue);
     //  发送数据到kafka中.需要对数据进行格式化的处理，方便后续的druid方便处理实现操作。使用方式进行json转换操作
-    clickDataStream.map{
-       implicit  val formats=DefaultFormat
+    val processStream: DataStream[String] = clickDataStream.map {
+      msg => {
+        // 导入隐式转换操作
+        implicit val formats = DefaultFormats
+        val str: String = write(msg)
+        str
+      }
     }
+    // 发送数据执行操作
+    println(processStream)
     //  增加检查点的支持操作和实现
     env.execute("ad-process")
   }
