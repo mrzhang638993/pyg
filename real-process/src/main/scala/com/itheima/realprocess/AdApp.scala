@@ -97,7 +97,6 @@ object AdApp {
     // 数据需要写入到kafka中了
     // brokerList: String, topicId: String, serializationSchema: SerializationSchema[T]
     processStream.addSink(new FlinkKafkaProducer010[String](GlobalConfigUtil.BOOTSTRAP_SERVERS,GlobalConfigUtil.AD_PROCESS_TOPIC,new SimpleStringSchema[String]()){})
-
     //  增加检查点的支持操作和实现
     env.execute("ad-process")
   }

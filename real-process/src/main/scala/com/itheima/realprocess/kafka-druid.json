@@ -1,0 +1,73 @@
+{
+  "type": "kafka",
+  "dataSchema": {
+    "dataSource": "ad_click_process",
+    "parser": {
+      "type": "string",
+      "parseSpec": {
+        "format": "json",
+        "timestampSpec": {
+          "column": "timestamp",
+          "format": "auto"
+        },
+        "dimensionsSpec": {
+          "dimensions": [ ],
+          "dimensionExclusions": [
+            "timestamp",
+            "is_new",
+            "click_cnt"
+          ]
+        }
+      }
+    },
+    "metricsSpec": [
+      {
+        "name": "count",
+        "type": "count"
+      },
+      {
+        "name": "click_cnt",
+        "fieldName": "click_cnt",
+        "type": "longSum"
+      },
+      {
+        "name": "new_cnt",
+        "fieldName": "is_new",
+        "type": "longSum"
+      },
+      {
+        "name": "uv",
+        "fieldName": "user_id",
+        "type": "thetaSketch",
+        "isInputThetaSketch": "false",
+        "size": "16384"
+      },
+      {
+        "name": "click_uv",
+        "fieldName": "click_user_id",
+        "type": "thetaSketch", // 指定算法，去重的算法
+        "isInputThetaSketch": "false",
+        "size": "16384"
+      }
+    ],
+    "granularitySpec": {
+      "type": "uniform",
+      "segmentGranularity": "DAY",
+      "queryGranularity": "NONE",
+      "rollup": false
+    }
+  },
+  "tuningConfig": {
+    "type": "kafka",
+    "reportParseExceptions": false
+  },
+  "ioConfig": {
+    "topic": "ad_click_process",
+    "replicas": 1,
+    "taskDuration": "PT10M",
+    "completionTimeout": "PT20M",
+    "consumerProperties": {
+      "bootstrap.servers": "node01:9092,node02:9092,node03:9092"
+    }
+  }
+}
