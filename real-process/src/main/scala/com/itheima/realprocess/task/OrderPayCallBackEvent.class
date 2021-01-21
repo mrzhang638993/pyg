@@ -1,0 +1,12 @@
+public class OrderPayCallBackEvent {
+    private String transactId;
+    private String payChannel;
+    private Long timeStamp;
+
+    public OrderPayCallBackEvent(String transactId, String payChannel, Long timeStamp) {
+        this.transactId = transactId;
+        this.payChannel = payChannel;
+        this.timeStamp = timeStamp;
+    }
+    //省略getter/setter方法/toString方法
+}
