@@ -1,10 +1,7 @@
 package com.itheima.realprocess
 
-import java.lang
-import java.util.Properties
-
 import com.alibaba.fastjson.{JSON, JSONObject}
-import com.itheima.realprocess.bean.{ChannelRealHot, ClickLog, ClickLogWide, Message}
+import com.itheima.realprocess.bean.{ClickLog, ClickLogWide, Message}
 import com.itheima.realprocess.task.{ChannelFreshnessTask, ChannelPvUvTask, ChannelRealHotTask, PreTask}
 import com.itheima.realprocess.util.GlobalConfigUtil
 import org.apache.flink.api.scala._
@@ -14,8 +11,11 @@ import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.watermark.Watermark
 import org.apache.flink.streaming.api.{CheckpointingMode, TimeCharacteristic}
-import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer010, FlinkKafkaConsumer09}
-import org.apache.flink.streaming.util.serialization.SimpleStringSchema
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer09
+import org.apache.flink.api.common.serialization.SimpleStringSchema
+
+import java.lang
+import java.util.Properties
 /**
  * 初始化flink的流式环境
  * */

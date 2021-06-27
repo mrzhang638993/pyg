@@ -1,21 +1,21 @@
 package com.itheima.realprocess
 
-import java.text.SimpleDateFormat
-import java.util.Properties
-
 import com.alibaba.fastjson.{JSON, JSONObject}
 import com.itheima.realprocess.bean.{AdClickLog, AdClickLogWide}
 import com.itheima.realprocess.task.PreprocessTask
 import com.itheima.realprocess.util.GlobalConfigUtil
+import org.apache.flink.api.scala._
+import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.api.functions.AssignerWithPeriodicWatermarks
 import org.apache.flink.streaming.api.scala.{DataStream, StreamExecutionEnvironment}
 import org.apache.flink.streaming.api.watermark.Watermark
-import org.apache.flink.streaming.api.TimeCharacteristic
 import org.apache.flink.streaming.connectors.kafka.{FlinkKafkaConsumer09, FlinkKafkaProducer010}
-import org.apache.flink.streaming.util.serialization.{SerializationSchema, SimpleStringSchema}
-import org.apache.flink.api.scala._
+import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.json4s.DefaultFormats
-import org.json4s.jackson.Serialization.{read, write}
+import org.json4s.jackson.Serialization.write
+
+import java.text.SimpleDateFormat
+import java.util.Properties
 
 /**
  * 初始化flink的流式环境
@@ -96,7 +96,7 @@ object AdApp {
     }
     // 数据需要写入到kafka中了
     // brokerList: String, topicId: String, serializationSchema: SerializationSchema[T]
-    processStream.addSink(new FlinkKafkaProducer010[String](GlobalConfigUtil.BOOTSTRAP_SERVERS,GlobalConfigUtil.AD_PROCESS_TOPIC,new SimpleStringSchema[String]()){})
+    processStream.addSink(new FlinkKafkaProducer010[String](GlobalConfigUtil.BOOTSTRAP_SERVERS,GlobalConfigUtil.AD_PROCESS_TOPIC,new SimpleStringSchema()){})
     //  增加检查点的支持操作和实现
     env.execute("ad-process")
   }
