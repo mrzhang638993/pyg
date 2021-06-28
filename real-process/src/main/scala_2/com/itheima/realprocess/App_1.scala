@@ -1,8 +1,8 @@
 package com.itheima.realprocess
 
 import com.alibaba.fastjson.JSON
-import com.itheima.realprocess.bean.{ChannelRealHot1, ClickLog1, ClickLogWide1, Message1}
-import com.itheima.realprocess.task.{ChannelRealHotTask1, PreProcessTask1}
+import com.itheima.realprocess.bean._
+import com.itheima.realprocess.task.{ChannelPvUvTask1, ChannelRealHotTask1, PreProcessTask1}
 import com.itheima.realprocess.util.{GlobalConfigUtil2, HbaseUtils1}
 import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.api.scala.createTypeInformation
@@ -18,6 +18,7 @@ import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer010
 
 import java.lang
 import java.util.Properties
+import scala.collection.mutable
 object App_1 {
 
   def main(args: Array[String]): Unit = {
@@ -98,6 +99,26 @@ object App_1 {
           visited+=originalData.toLong
         }
         HbaseUtils1.putData(tableName,rowKey,cfName,visitedColumn,visited.toString)
+      }
+    })
+    val channelPvUvStream: DataStream[ChannelPvUv1] = ChannelPvUvTask1.process(preTaskData)
+    channelPvUvStream.addSink(new SinkFunction[ChannelPvUv1] {
+      override def invoke(value: ChannelPvUv1, context: SinkFunction.Context[_]): Unit ={
+         // 将计算得到的渠道对应的pv以及uv的数据保存到hbase中
+         val  tableNameStr:String="channel_pvuv"
+         val  clfName:String="info"
+         val  channelIdColumn:String="channelId"
+         val  yearMonthDayHourColumn:String="yearMonthDayHour"
+         val  pvColumn:String="pv"
+         val  uvColumn:String="uv"
+         val  rowKey:String=value.channelId+":"+value.yearDayMonthHour
+         val pvUv: Map[String, String] = HbaseUtils1.getMapData(tableNameStr, rowKey, clfName, List(pvColumn, uvColumn))
+         if (pvUv!=null){
+           // 需要去除对应的字段为null的操作和相关的业务逻辑实现的,增加代码的健壮性。
+           value.pv+=pvUv.get(pvColumn).get.toLong
+           value.uv+=pvUv.get(uvColumn).get.toLong
+         }
+        HbaseUtils1.putMapData(tableNameStr,rowKey,clfName,mutable.Map(pvColumn->value.pv,uvColumn->value.uv,channelIdColumn->value.channelId,yearMonthDayHourColumn->value.yearDayMonthHour))
       }
     })
     env.execute("real-process")
