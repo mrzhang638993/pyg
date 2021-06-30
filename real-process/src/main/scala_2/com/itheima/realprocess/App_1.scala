@@ -125,7 +125,22 @@ object App_1 {
     val freshAndOldUser: DataStream[ChannelFreshness1] = ChannelFreshnessTask1.process(preTaskData)
     freshAndOldUser.addSink(new SinkFunction[ChannelFreshness1] {
       override def invoke(value: ChannelFreshness1, context: SinkFunction.Context[_]): Unit ={
-
+          val tableName:String="channel_freshness"
+          val clfName:String="info"
+          val rowkey=value.channelId+":"+value.date
+          //  查询new历史数据
+          val channelIdColumn:String="channelId"
+          val dateColumn:String="date"
+          val newCountColumn:String="newCount"
+          val oldCountColumn:String="oldCount"
+          val mapValue: Map[String, String] = HbaseUtils1.getMapData(tableName, rowkey, clfName, List(newCountColumn, oldCountColumn))
+          if(mapValue!=null){
+            val newCount:String = mapValue.getOrElse(newCountColumn, 0).toString
+            val oldCount: String = mapValue.getOrElse(oldCountColumn, 0).toString
+            HbaseUtils1.putMapData(tableName,rowkey,clfName,mutable.Map(newCountColumn->(value.newCount+newCount.toLong).toString,oldCountColumn->(value.oldCount+oldCount.toLong).toString,channelIdColumn->value.channelId,dateColumn->value.date))
+          }else{
+            HbaseUtils1.putMapData(tableName,rowkey,clfName,mutable.Map(newCountColumn->value.newCount.toString,oldCountColumn->value.oldCount.toString,channelIdColumn->value.channelId,dateColumn->value.date))
+          }
       }
     })
     env.execute("real-process")
