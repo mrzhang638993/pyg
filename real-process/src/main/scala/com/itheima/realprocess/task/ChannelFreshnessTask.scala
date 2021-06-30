@@ -1,6 +1,6 @@
 package com.itheima.realprocess.task
 
-import com.itheima.realprocess.bean.{ChannelFreshness, ClickLogWide}
+import com.itheima.realprocess.bean.{ChannelFreshness1, ClickLogWide}
 import com.itheima.realprocess.util.HbaseUtil
 import org.apache.commons.lang3.StringUtils
 import org.apache.flink.streaming.api.scala.{DataStream, KeyedStream, WindowedStream}
@@ -12,18 +12,18 @@ import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 /**
  * 用户的新鲜度任务测试
  **/
-object ChannelFreshnessTask extends  BaseTask[ChannelFreshness]{
+object ChannelFreshnessTask extends  BaseTask[ChannelFreshness1]{
   /**
    * 定义转换操作
    **/
-  override def map(clickLogWide: DataStream[ClickLogWide]): DataStream[ChannelFreshness] = {
+  override def map(clickLogWide: DataStream[ClickLogWide]): DataStream[ChannelFreshness1] = {
     clickLogWide.flatMap {
       clickLog =>
         // 判断是新用户还是老用户的信息。
         List(
-          ChannelFreshness(clickLog.channelID.toString, clickLog.yearMonth, clickLog.isNew, isOld(clickLog.isNew, clickLog.isMonthNew)),
-          ChannelFreshness(clickLog.channelID.toString, clickLog.yearMonthDay, clickLog.isNew, isOld(clickLog.isNew, clickLog.isDayNew)),
-          ChannelFreshness(clickLog.channelID.toString, clickLog.yearMonthDayHour, clickLog.isNew, isOld(clickLog.isNew, clickLog.isHourNew))
+          ChannelFreshness1(clickLog.channelID.toString, clickLog.yearMonth, clickLog.isNew, isOld(clickLog.isNew, clickLog.isMonthNew)),
+          ChannelFreshness1(clickLog.channelID.toString, clickLog.yearMonthDay, clickLog.isNew, isOld(clickLog.isNew, clickLog.isDayNew)),
+          ChannelFreshness1(clickLog.channelID.toString, clickLog.yearMonthDayHour, clickLog.isNew, isOld(clickLog.isNew, clickLog.isHourNew))
         )
     }
   }
@@ -31,23 +31,23 @@ object ChannelFreshnessTask extends  BaseTask[ChannelFreshness]{
   /**
    * 定义分组操作
    **/
-  override def groupBy(mapDataStream: DataStream[ChannelFreshness]): KeyedStream[ChannelFreshness, String] = {
+  override def groupBy(mapDataStream: DataStream[ChannelFreshness1]): KeyedStream[ChannelFreshness1, String] = {
     mapDataStream.keyBy(freshness => freshness.channelID + freshness.date)
   }
 
   /**
    * 聚合操作实现
    **/
-  override def reduce(windowStream: WindowedStream[ChannelFreshness, String, TimeWindow]): DataStream[ChannelFreshness] = {
-    windowStream.reduce((priv, next) => ChannelFreshness(priv.channelID, priv.date, priv.newCount + next.newCount, priv.oldCount + next.oldCount))
+  override def reduce(windowStream: WindowedStream[ChannelFreshness1, String, TimeWindow]): DataStream[ChannelFreshness1] = {
+    windowStream.reduce((priv, next) => ChannelFreshness1(priv.channelID, priv.date, priv.newCount + next.newCount, priv.oldCount + next.oldCount))
   }
 
   /**
    * 数据落地到hbase中
    **/
-  override def sink2Hbase(reduceStream: DataStream[ChannelFreshness]): Unit = {
-    reduceStream.addSink(new SinkFunction[ChannelFreshness] {
-      override def invoke(value: ChannelFreshness): Unit = {
+  override def sink2Hbase(reduceStream: DataStream[ChannelFreshness1]): Unit = {
+    reduceStream.addSink(new SinkFunction[ChannelFreshness1] {
+      override def invoke(value: ChannelFreshness1): Unit = {
         // 定义变量
         val tableName = "channel_freshness"
         val rowKey = value.channelID + ":" + value.date

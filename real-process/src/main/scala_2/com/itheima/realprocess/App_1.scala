@@ -2,7 +2,7 @@ package com.itheima.realprocess
 
 import com.alibaba.fastjson.JSON
 import com.itheima.realprocess.bean._
-import com.itheima.realprocess.task.{ChannelPvUvTask1, ChannelRealHotTask1, PreProcessTask1}
+import com.itheima.realprocess.task.{ChannelFreshnessTask1, ChannelPvUvTask1, ChannelRealHotTask1, PreProcessTask1}
 import com.itheima.realprocess.util.{GlobalConfigUtil2, HbaseUtils1}
 import org.apache.flink.api.common.serialization.SimpleStringSchema
 import org.apache.flink.api.scala.createTypeInformation
@@ -119,6 +119,13 @@ object App_1 {
            value.uv+=pvUv.get(uvColumn).get.toLong
          }
         HbaseUtils1.putMapData(tableNameStr,rowKey,clfName,mutable.Map(pvColumn->value.pv,uvColumn->value.uv,channelIdColumn->value.channelId,yearMonthDayHourColumn->value.yearDayMonthHour))
+      }
+    })
+    // 将新老用户的数据写入到hbase中执行操作
+    val freshAndOldUser: DataStream[ChannelFreshness1] = ChannelFreshnessTask1.process(preTaskData)
+    freshAndOldUser.addSink(new SinkFunction[ChannelFreshness1] {
+      override def invoke(value: ChannelFreshness1, context: SinkFunction.Context[_]): Unit ={
+
       }
     })
     env.execute("real-process")
