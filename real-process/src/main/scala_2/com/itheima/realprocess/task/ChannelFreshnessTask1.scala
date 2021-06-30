@@ -6,7 +6,7 @@ import org.apache.flink.streaming.api.scala.DataStream
 import org.apache.flink.streaming.api.windowing.time.Time
 
 //用户新鲜度操作。对应的是新老用户对应的比例数据的
-//统计渠道对应的新老用户的数量信息的。
+//统计渠道对应的新老用户的数量信息的。统计的是简单的各种指标的计算和操作实现的。
 object ChannelFreshnessTask1 {
 
     def process(preTaskData: DataStream[ClickLogWide1]): DataStream[ChannelFreshness1] ={
