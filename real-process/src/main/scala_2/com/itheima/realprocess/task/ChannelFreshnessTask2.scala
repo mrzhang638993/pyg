@@ -9,7 +9,9 @@ import org.apache.flink.streaming.api.windowing.time.Time
 import org.apache.flink.streaming.api.windowing.windows.TimeWindow
 
 import scala.collection.mutable
-
+/*
+    重写代码设计的相关的操作和实现机制。
+* */
 object ChannelFreshnessTask2  extends BaseTask1[ChannelFreshness1]{
   override def map(clickLogWide: DataStream[ClickLogWide1]): DataStream[ChannelFreshness1] = {
     val oldAndFreshUser: DataStream[ChannelFreshness1] = clickLogWide.flatMap{
